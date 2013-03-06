@@ -23,6 +23,8 @@ Author: Luis Leao (luisleao@gmail.com)
   var btnClose=document.querySelector(".close");
   var logArea=document.querySelector(".log");
   var statusLine=document.querySelector("#status");
+  var displayTimeout = null;
+  var displayData = "";
   
   var serial_devices=document.querySelector(".serial_devices");
   
@@ -139,8 +141,14 @@ Author: Luis Leao (luisleao@gmail.com)
   }
   
   var onRead=function(readData) {
-    console.log("Received '"+readData+"'");
-    $("#terminal").html($("#terminal").html() + readData);
+    displayData += readData;
+    if (displayTimeout != null) window.clearTimeout(displayTimeout);
+      displayTimeout = window.setTimeout(function() {
+        console.log("Received '"+displayData+"'");
+        $("#terminal").html($("#terminal").html() + displayData);
+        displayData = "";
+        displayTimeout = null;
+      }, 500);
   }
 
   var closeSerial=function() {

@@ -43,9 +43,9 @@ var serial_lib=(function() {
       return;
     }
     if (readInfo && readInfo.bytesRead>0 && readInfo.data) {
-      onRead(String.fromCharCode.apply(null, new Uint8Array(readInfo.data)));
+      onRead(ab2str(readInfo.data));
     }
-    chrome.serial.read(connectionInfo.connectionId, 1024, onCharRead);
+    chrome.serial.read(connectionInfo.connectionId, 128, onCharRead);
   }
 
   var getPorts=function(callback) {
