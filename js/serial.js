@@ -43,9 +43,9 @@ var serial_lib=(function() {
       return;
     }
     if (readInfo && readInfo.bytesRead>0 && readInfo.data) {
-      onRead(ab2str(readInfo.data));
+      onRead(String.fromCharCode.apply(null, new Uint8Array(readInfo.data)));
     }
-    chrome.serial.read(connectionInfo.connectionId, 1, onCharRead);
+    chrome.serial.read(connectionInfo.connectionId, 1024, onCharRead);
   }
 
   var getPorts=function(callback) {
@@ -53,8 +53,9 @@ var serial_lib=(function() {
   };
   
   var openSerial=function(serialPort, callback) {
-    chrome.serial.open(serialPort, function(cInfo) {
-     onOpen(cInfo, callback)
+    chrome.serial.open(serialPort, {bitrate: 9600}, 
+      function(cInfo) {
+        onOpen(cInfo, callback)
     });
   };
   

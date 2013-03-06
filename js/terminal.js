@@ -93,13 +93,15 @@ Author: Luis Leao (luisleao@gmail.com)
     
     serial_lib.getPorts(function(items) {
       logSuccess("got "+items.length+" ports");
+      var selected = false;
       for (var i=0; i<items.length; i++) {
          serial_devices.options.add(new Option(items[i], items[i]));
          if (i==1 || /usb/i.test(items[i]) && /tty/i.test(items[i])) {
            serial_devices.selectionIndex=i;
-           logSuccess("auto-selected "+items[i]);
+           selected = true;
          }
       }
+      if (selected) logSuccess("auto-selected "+items[serial_devices.selectionIndex]);
     });
   };
   
@@ -137,6 +139,7 @@ Author: Luis Leao (luisleao@gmail.com)
   }
   
   var onRead=function(readData) {
+    console.log("Received '"+readData+"'");
     $("#terminal").html($("#terminal").html() + readData);
   }
 
