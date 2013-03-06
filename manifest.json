@@ -1,0 +1,15 @@
+{
+  "name": "Espruino Web Terminal",
+  "description": "A Simple Web-based IDE for writing Espruino code",
+  "version": "0.1",
+  "app": {
+    "background": {
+      "scripts": ["js/background.js"]
+    }
+  },
+  "icons": {
+    "128": "img/icon_128.png"
+  },
+  "permissions" : ["serial"],
+  "manifest_version": 2
+}
