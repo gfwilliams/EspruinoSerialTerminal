@@ -27,6 +27,9 @@ Author: Luis Leao (luisleao@gmail.com)
   var displayData = "";
   
   var serial_devices=document.querySelector(".serial_devices");
+  var termText = [ "" ];
+  var termCursorX = 0;
+  var termCursorY = 0;
   
   var logObj=function(obj) {
     console.log(obj);
@@ -60,7 +63,21 @@ Author: Luis Leao (luisleao@gmail.com)
       console.log("Press "+ch);
       if (serial_lib.isConnected())
         serial_lib.writeSerial(ch); 
-    });
+    }).keydown(function(e) { 
+      var ch = undefined;
+      if (e.keyCode == 8) ch = "\x08";
+      if (e.keyCode == 38) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(65); // up
+      if (e.keyCode == 40) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(66); // down
+      if (e.keyCode == 39) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(67); // right
+      if (e.keyCode == 37) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(68); // left
+
+      if (ch!=undefined) {
+        e.preventDefault();
+        console.log("Press "+e.keyCode+" = '"+ch+"'");
+        if (serial_lib.isConnected())
+          serial_lib.writeSerial(ch);
+      } 
+    });;
 
     refreshPorts();
   };
@@ -95,15 +112,15 @@ Author: Luis Leao (luisleao@gmail.com)
     
     serial_lib.getPorts(function(items) {
       logSuccess("got "+items.length+" ports");
-      var selected = false;
+      var selected = -1;
       for (var i=0; i<items.length; i++) {
          serial_devices.options.add(new Option(items[i], items[i]));
-         if (i==1 || /usb/i.test(items[i]) && /tty/i.test(items[i])) {
-           serial_devices.selectionIndex=i;
-           selected = true;
+         if (i==0 || (/usb/i.test(items[i])  && /tty/i.test(items[i]))) {
+           selected = i;
          }
       }
-      if (selected) logSuccess("auto-selected "+items[serial_devices.selectionIndex]);
+      if (selected) logSuccess("auto-selected "+items[selected]);
+      serial_devices.options.selectedIndex = selected;
     });
   };
   
@@ -140,15 +157,43 @@ Author: Luis Leao (luisleao@gmail.com)
     serial_lib.writeSerial(writeString); 
   }
   
+  var handleReceivedCharacter = function (char) {
+        console.log("IN = "+char.charCodeAt(0)+","+char.charCodeAt(1));
+        var charn = char.charCodeAt(0);
+        if (charn == 13) { // carriage return
+          termCursorX = 0;           
+        } else if (charn == 10) { // new line
+          termCursorX = 0; termCursorY++;
+          termText.splice(termCursorY,0,"");
+        } else if (charn == 8) { // backspace
+          if (termCursorX>0) termCursorX--;
+        } else {
+          termText[termCursorY] = termText[termCursorY].substr(0,termCursorX) + char + termText[termCursorY].substr(termCursorX+1);
+          termCursorX++;
+        }        
+  }
+  var updateTerminal = function() {        
+        var t = [];
+        for (y in termText) {
+          var line = termText[y];
+          if (y == termCursorY)
+            line = line.substr(0,termCursorX) + "<span class='termCursor'>" + line.substr(termCursorX,1) + "</span>" + line.substr(termCursorX+1);
+          t.push(line);
+        }
+        
+        $("#terminal").html(t.join("<br/>"));
+  }
+
   var onRead=function(readData) {
     displayData += readData;
     if (displayTimeout != null) window.clearTimeout(displayTimeout);
       displayTimeout = window.setTimeout(function() {
         console.log("Received '"+displayData+"'");
-        $("#terminal").html($("#terminal").html() + displayData);
+        for (i in displayData) handleReceivedCharacter(displayData[i]);
+        updateTerminal();
         displayData = "";
         displayTimeout = null;
-      }, 500);
+      }, 100);
   }
 
   var closeSerial=function() {
@@ -160,6 +205,8 @@ Author: Luis Leao (luisleao@gmail.com)
    statusLine.textContent="Hover here to connect";
    statusLine.className="";
   }
+
+
   
   
   init();

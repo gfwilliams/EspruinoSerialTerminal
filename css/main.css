@@ -19,3 +19,8 @@ body {
   width: 320px;
   height:200px;
 }
+
+.termCursor {
+  background-color: #000;
+  color: #FFF;
+}
