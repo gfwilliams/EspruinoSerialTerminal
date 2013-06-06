@@ -191,10 +191,15 @@ Author: Luis Leao (luisleao@gmail.com)
           var line = termText[y];
           if (y == termCursorY)
             line = getSubString(line,0,termCursorX) + "<span class='termCursor'>" + getSubString(line,termCursorX,1) + "</span>" + getSubString(line,termCursorX+1);
-          t.push(line);
+          t.push("<div class='termLine' lineNumber='"+y+"'>"+line+"</div>");
         }
         
-        $("#terminal").html(t.join("<br/>"));
+        $("#terminal").html(t.join(""));
+        var cursorpos = $("#terminal .termLine[lineNumber="+termCursorY+"]").position().top;
+        var height = $("#terminal").height();
+        var scrollpos = $("#terminal").scrollTop();
+        if (cursorpos > height+scrollpos) $("#terminal").scrollTop(cursorpos-height);
+        if (cursorpos < scrollpos) $("#terminal").scrollTop(cursorpos);
   }
 
   var onRead=function(readData) {
