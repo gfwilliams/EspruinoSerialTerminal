@@ -1,13 +1,13 @@
 EspruinoSerialTerminal
 ======================
 
-A Simple Web-Based Serial Terminal - designed for writing code on microcontroller that use the Espruino JavaScript interpreter (http://www.espruino.com) - but useful for a bunch of other stuff too!
+A Simple Web-Based VT100 Serial Terminal - designed for writing code on microcontrollers that use the Espruino JavaScript interpreter (http://www.espruino.com) - but useful for a bunch of other stuff too!
 
 [![ScreenShot](https://raw.github.com/gfwilliams/EspruinoSerialTerminal/master/README.png)](http://youtu.be/4O5xKfazAWI)
 
 This is a Chromium Web App that uses chome.serial to access your PC's serial port: http://developer.chrome.com/apps/serial.html
 
-It implements basic VT100 terminal features (up/down/left/right/etc) - enough for you to write code using the Espruino, but not a whole bunch more.
+It implements basic VT100 terminal features (up/down/left/right/etc) - enough for you to write code using the Espruino, but it is nowhere near a complete VT100 terminal emulator.
 
 Currently, it's a bit of a mess inside - quickly hacked together from the Chrome example and hence under their Apache licence. Please, if you have some free time, help me make this better!
 
@@ -15,13 +15,13 @@ Currently, it's a bit of a mess inside - quickly hacked together from the Chrome
 Installing
 ----------
 
-* Download the files in EspruinoSerialTerminal to a directory on your PC
+* Download the files in EspruinoSerialTerminal to a directory on your PC (either as a [ZIP File](https://github.com/gfwilliams/EspruinoSerialTerminal/archive/master.zip), or using git)
 * Install Chome Web Browser
 * Click the menu icon in the top right
 * Click 'Settings'
 * Click 'Extensions' on the left
 * Click 'Load Unpackaged Extension'
-* Navigate to the Directory where you downloaded EspruinoSerialTerminal and click Ok
+* Navigate to the EspruinoSerialTerminal Directory and click Ok
 * Job Done. It'll now appear as an app, but you can start it easily right now by clicking the 'Launch' link on the extensions page
 
 Using
