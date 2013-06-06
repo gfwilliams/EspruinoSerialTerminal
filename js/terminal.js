@@ -24,7 +24,7 @@ Author: Luis Leao (luisleao@gmail.com)
   var logArea=document.querySelector(".log");
   var statusLine=document.querySelector("#status");
   var displayTimeout = null;
-  var displayData = "";
+  var displayData = [];
   
   var serial_devices=document.querySelector(".serial_devices");
   var termText = [ "" ];
@@ -57,6 +57,7 @@ Author: Luis Leao (luisleao@gmail.com)
     document.querySelector(".refresh").addEventListener("click", refreshPorts);
 
     $("#terminal").click(function() { $("#terminalfocus").focus(); });
+    $("#terminalfocus").focus(function() { $("#terminal").addClass('focus'); } ).blur(function() { $("#terminal").removeClass('focus'); } );
     $("#terminalfocus").keypress(function(e) { 
       e.preventDefault();
       var ch = String.fromCharCode(e.which);
@@ -65,6 +66,9 @@ Author: Luis Leao (luisleao@gmail.com)
         serial_lib.writeSerial(ch); 
     }).keydown(function(e) { 
       var ch = undefined;
+      if (e.ctrlKey) {
+        if (e.keyCode == 'C'.charCodeAt(0)) ch = String.fromCharCode(3); // control C
+      }
       if (e.keyCode == 8) ch = "\x08";
       if (e.keyCode == 38) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(65); // up
       if (e.keyCode == 40) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(66); // down
@@ -156,19 +160,28 @@ Author: Luis Leao (luisleao@gmail.com)
     }
     serial_lib.writeSerial(writeString); 
   }
+
+  function getSubString(str, from, len) {
+    if (len == undefined) {
+      return str.substr(from, len);
+    } else {
+      var s = str.substr(from, len);
+      while (s.length < len) s+=" ";
+      return s;
+    }
+  }
   
-  var handleReceivedCharacter = function (char) {
-        console.log("IN = "+char.charCodeAt(0)+","+char.charCodeAt(1));
-        var charn = char.charCodeAt(0);
-        if (charn == 13) { // carriage return
+  var handleReceivedCharacter = function (/*char*/ch) {
+        console.log("IN = "+ch);
+        if (ch == 13) { // carriage return
           termCursorX = 0;           
-        } else if (charn == 10) { // new line
+        } else if (ch == 10) { // new line
           termCursorX = 0; termCursorY++;
           termText.splice(termCursorY,0,"");
-        } else if (charn == 8) { // backspace
+        } else if (ch == 8) { // backspace
           if (termCursorX>0) termCursorX--;
         } else {
-          termText[termCursorY] = termText[termCursorY].substr(0,termCursorX) + char + termText[termCursorY].substr(termCursorX+1);
+          termText[termCursorY] = getSubString(termText[termCursorY],0,termCursorX) + String.fromCharCode(ch) + getSubString(termText[termCursorY],termCursorX+1);
           termCursorX++;
         }        
   }
@@ -177,7 +190,7 @@ Author: Luis Leao (luisleao@gmail.com)
         for (y in termText) {
           var line = termText[y];
           if (y == termCursorY)
-            line = line.substr(0,termCursorX) + "<span class='termCursor'>" + line.substr(termCursorX,1) + "</span>" + line.substr(termCursorX+1);
+            line = getSubString(line,0,termCursorX) + "<span class='termCursor'>" + getSubString(line,termCursorX,1) + "</span>" + getSubString(line,termCursorX+1);
           t.push(line);
         }
         
@@ -185,13 +198,16 @@ Author: Luis Leao (luisleao@gmail.com)
   }
 
   var onRead=function(readData) {
-    displayData += readData;
+    // Add data to our buffer
+    var bufView=new Uint8Array(readData);
+    for (var i=0;i<bufView.length;i++) displayData.push(bufView[i]);
+    // If we haven't had data after 100ms, update the HTML
     if (displayTimeout != null) window.clearTimeout(displayTimeout);
       displayTimeout = window.setTimeout(function() {
-        console.log("Received '"+displayData+"'");
-        for (i in displayData) handleReceivedCharacter(displayData[i]);
+        for (i in displayData) 
+          handleReceivedCharacter(displayData[i]);
         updateTerminal();
-        displayData = "";
+        displayData = [];
         displayTimeout = null;
       }, 100);
   }

@@ -43,7 +43,7 @@ var serial_lib=(function() {
       return;
     }
     if (readInfo && readInfo.bytesRead>0 && readInfo.data) {
-      onRead(ab2str(readInfo.data));
+      onRead(readInfo.data);
     }
     chrome.serial.read(connectionInfo.connectionId, 128, onCharRead);
   }
@@ -80,17 +80,6 @@ var serial_lib=(function() {
   var onRead=function(readInfo) {
     if (readListener) readListener(readInfo);
   };
-
-  /* the arraybuffer is interpreted as an array of UTF-8 (1-byte Unicode chars) */
-  var ab2str=function(buf) {
-    var bufView=new Uint8Array(buf);
-    var unis=[];
-    for (var i=0; i<bufView.length; i++) {
-      unis.push(bufView[i]);
-    }
-    return String.fromCharCode.apply(null, unis);
-  };
-
 
   var str2ab=function(str) {
     var buf=new ArrayBuffer(str.length);
