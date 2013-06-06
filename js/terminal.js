@@ -30,6 +30,7 @@ Author: Luis Leao (luisleao@gmail.com)
   var termText = [ "" ];
   var termCursorX = 0;
   var termCursorY = 0;
+  var termControlChars = [];
   
   var logObj=function(obj) {
     console.log(obj);
@@ -69,11 +70,16 @@ Author: Luis Leao (luisleao@gmail.com)
       if (e.ctrlKey) {
         if (e.keyCode == 'C'.charCodeAt(0)) ch = String.fromCharCode(3); // control C
       }
-      if (e.keyCode == 8) ch = "\x08";
+      if (e.keyCode == 8) ch = "\x08"; // backspace
+      if (e.keyCode == 46) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(51)+String.fromCharCode(126); // delete
       if (e.keyCode == 38) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(65); // up
       if (e.keyCode == 40) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(66); // down
       if (e.keyCode == 39) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(67); // right
       if (e.keyCode == 37) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(68); // left
+      if (e.keyCode == 36) ch = String.fromCharCode(27)+String.fromCharCode(79)+String.fromCharCode(72); // home
+      if (e.keyCode == 35) ch = String.fromCharCode(27)+String.fromCharCode(79)+String.fromCharCode(70); // end
+      if (e.keyCode == 33) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(53)+String.fromCharCode(126); // page up
+      if (e.keyCode == 34) ch = String.fromCharCode(27)+String.fromCharCode(91)+String.fromCharCode(54)+String.fromCharCode(126); // page down
 
       if (ch!=undefined) {
         e.preventDefault();
@@ -173,24 +179,56 @@ Author: Luis Leao (luisleao@gmail.com)
   
   var handleReceivedCharacter = function (/*char*/ch) {
         console.log("IN = "+ch);
-        if (ch == 13) { // carriage return
-          termCursorX = 0;           
-        } else if (ch == 10) { // new line
-          termCursorX = 0; termCursorY++;
-          termText.splice(termCursorY,0,"");
-        } else if (ch == 8) { // backspace
-          if (termCursorX>0) termCursorX--;
-        } else {
-          termText[termCursorY] = getSubString(termText[termCursorY],0,termCursorX) + String.fromCharCode(ch) + getSubString(termText[termCursorY],termCursorX+1);
-          termCursorX++;
-        }        
+        if (termControlChars.length==0) {        
+          switch (ch) {
+            case  8 : {
+              if (termCursorX>0) termCursorX--;
+            } break;
+            case 10 : {
+              termCursorX = 0; termCursorY++;
+              termText.splice(termCursorY,0,"");
+            } break;
+            case 13 : {
+              termCursorX = 0;           
+            } break;
+            case 27 : {
+              termControlChars = [ 27 ];
+            } break;
+            default : {
+              termText[termCursorY] = getSubString(termText[termCursorY],0,termCursorX) + String.fromCharCode(ch) + getSubString(termText[termCursorY],termCursorX+1);
+              termCursorX++;
+            }
+          }
+       } else if (termControlChars[0]==27) {
+         if (termControlChars[1]==91) {
+           switch (ch) {
+             case 65: if (termCursorY > 0) termCursorY--; break; break; // up  FIXME should add extra lines in...
+             case 66: termCursorY++; while (termCursorY > termText.length) termText.push("")  // down FIXME should add extra lines in...
+             case 67: termCursorX++; break; // right
+             case 68: if (termCursorX > 0) termCursorX--; break; // left
+           }
+           termControlChars = [];      
+         } else {
+           switch (ch) {
+             case 91: {
+               termControlChars = [27, 91];      
+             } break;
+             default: {
+               termControlChars = [];      
+             }
+           }
+         }
+       } else termControlChars = [];         
   }
   var updateTerminal = function() {        
         var t = [];
         for (y in termText) {
           var line = termText[y];
-          if (y == termCursorY)
-            line = getSubString(line,0,termCursorX) + "<span class='termCursor'>" + getSubString(line,termCursorX,1) + "</span>" + getSubString(line,termCursorX+1);
+          if (y == termCursorY) {
+            var ch = getSubString(line,termCursorX,1);
+            if (ch==" ") ch = "&nbsp;";
+            line = getSubString(line,0,termCursorX) + "<span class='termCursor'>" + ch + "</span>" + getSubString(line,termCursorX+1);
+          }
           t.push("<div class='termLine' lineNumber='"+y+"'>"+line+"</div>");
         }
         
