@@ -1,7 +1,7 @@
 EspruinoSerialTerminal
 ======================
 
-A Simple Web-Based Serial Terminal for writing Espruino code
+A Simple Web-Based Serial Terminal - designed for writing code on embedded devices with the Espruino JavaScript interpreter (http://www.espruino.com) - but useful for a bunch of other stuff too!
 
 This is a Chromium Web App that uses chome.serial to access your PC's serial port: http://developer.chrome.com/apps/serial.html
 
@@ -27,8 +27,9 @@ Using
 
 * Run the Web app
 * If you've only just plugged your device in, press the refresh button
-* In the Top Left, make sure the correct serial port is chosen (usually ttyUSB0/ttyACM0 on linux)
+* In the Top Left, make sure the correct serial port is chosen (usually: Highest COM# number on Windows, tty.usbmodem/ttys000 on Mac, ttyUSB0/ttyACM0 on linux)
 * Click the 'Play' (connect) button
+* Click in the gray terminal window and start typing away!
 
 Features that would be nice
 ----------------------------
@@ -41,4 +42,4 @@ Features that would be epic
 ----------------------------
 * Some kind of arrangement so projects on the Espruino site could immediately be loaded
 * Implement the STM32 bootloader protocol so you can flash Espruino over the internet!
-* Use the Mozilla sound API to fake a serial port over the Audio Link
+* Use the Mozilla sound API to fake a serial port over the Audio Link for non-Chrome devices
