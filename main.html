@@ -6,28 +6,21 @@
   <link href="css/ui-lightness/jquery-ui-1.10.1.custom.css" rel="stylesheet">
   <script src="js/jquery-1.9.1.js"></script>
   <script src="js/jquery-ui-1.10.1.custom.js"></script>
-  <title>Espruino Web Terminal</title>
+  <title>Espruino Serial Terminal</title>
 </head>
 <body>
   <header>
-    <div id="expand">
-      <div id="status">Hover here to connect</div>
-      <div id="handler">settings</div>
-      <div class="commands">
-        <select class="serial_devices">
-        </select>
-        <button class="refresh">refresh</button><br/>
-        <button class="open">open</button>
-        <button class="close">close</button>
-        <div class="log"></div>
-      </div>
+    <div id="toolbar" class="ui-widget-header">
+          <select class="serial_devices"></select>
+          <button class="refresh">Refresh Serial Port List</button>
+          <button class="open">Connect</button>
+          <button class="close">Disconnect</button>
+          <span id="status">Not Connected</span>
     </div>
   </header>
-  <section id="section_terminal">
-    <div id="terminal">
-    </div>
-    <input id="terminalfocus" type="text" width="80">
-  </section>
+  <div id="terminal">
+  </div>
+  <input id="terminalfocus" type="text" size="1">
   <script src="js/serial.js"></script>
   <script src="js/terminal.js"></script>
 </body>

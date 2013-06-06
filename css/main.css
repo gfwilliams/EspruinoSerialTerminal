@@ -7,8 +7,12 @@ html, body {
 body {
   color: #000;
   font-family: 'Open Sans', arial, sans-serif;
-  font-size: 15px;
   overflow: hidden;
+}
+
+#toolbar {
+  display: inline-block;
+  width: 100%;
 }
 
 #terminal {
@@ -20,6 +24,12 @@ body {
   height:200px;
   border: 2px solid #666;
   overflow: scroll; /* adds scrollbar */
+}
+
+#terminalfocus {
+  position: absolute;
+  right: 20px;
+  bottom: 20px; 
 }
 
 .termCursor {

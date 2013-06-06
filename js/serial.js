@@ -15,20 +15,13 @@ limitations under the License.
 
 Author: Renato Mangini (mangini@chromium.org)
 Author: Luis Leao (luisleao@gmail.com)
+Author: Gordon Williams (gw@pur3.co.uk)
 **/
 
 var serial_lib=(function() {
   
   var connectionInfo;
   var readListener;
-  
-  var logObj=function(obj) {
-    console.log(obj);
-  }
-  var log=function(msg) {
-    console.log(msg);
-  };
-  
   
   var startListening=function(callback) {
     if (!connectionInfo || !connectionInfo.connectionId) {
@@ -61,11 +54,11 @@ var serial_lib=(function() {
   
   var onOpen=function(cInfo, callback) {
     if (!cInfo || !cInfo.connectionId || cInfo.connectionId<0) {
-      logObj(cInfo);
+      console.log(cInfo);
       throw "could not find device (connectionInfo="+cInfo+")";
     } else {
       connectionInfo=cInfo;
-      logObj(cInfo);
+      console.log(cInfo);
       if (callback) callback(cInfo);
     }
   };

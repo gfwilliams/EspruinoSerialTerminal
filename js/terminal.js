@@ -15,48 +15,43 @@ limitations under the License.
 
 Author: Renato Mangini (mangini@chromium.org)
 Author: Luis Leao (luisleao@gmail.com)
+Author: Gordon Williams (gw@pur3.co.uk)
 **/
 
 (function() {
   
-  var btnOpen=document.querySelector(".open");
-  var btnClose=document.querySelector(".close");
-  var logArea=document.querySelector(".log");
-  var statusLine=document.querySelector("#status");
+  var serial_devices=document.querySelector(".serial_devices");
+
   var displayTimeout = null;
   var displayData = [];
   
-  var serial_devices=document.querySelector(".serial_devices");
   var termText = [ "" ];
   var termCursorX = 0;
   var termCursorY = 0;
   var termControlChars = [];
   
-  var logObj=function(obj) {
-    console.log(obj);
-  }
   var logSuccess=function(msg) {
-    log("<span style='color: green;'>"+msg+"</span>");
+    console.log(msg);
   };
   var logError=function(msg) {
-    statusLine.className="error";
-    statusLine.textContent=msg;
-    log("<span style='color: red;'>"+msg+"</span>");
-  };
-  var log=function(msg) {
-    console.log(msg);
-    logArea.innerHTML=msg+"<br/>"+logArea.innerHTML;
+    $("#status").html(msg);
+    console.log("ERR: "+msg);
   };
   
   var init=function() {
     if (!serial_lib) throw "You must include serial.js before";
 
+    $(window).resize(function() {
+      $("#terminal").width($(window).innerWidth()-4);
+      $("#terminal").height($(window).innerHeight()-(4+$("#terminal").position().top));
+    });
+    $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
+    $( ".open" ).button({ text: false, icons: { primary: "ui-icon-play" } }).click(openSerial);
+    $( ".close" ).button({ text: false, icons: { primary: "ui-icon-stop" } }).click(closeSerial);
+    $(window).resize(); // force terminal to be resized now we have layed everything out
+
     flipState(true);
     
-    btnOpen.addEventListener("click", openSerial);
-    btnClose.addEventListener("click", closeSerial);
-    document.querySelector(".refresh").addEventListener("click", refreshPorts);
-
     $("#terminal").click(function() { $("#terminalfocus").focus(); });
     $("#terminalfocus").focus(function() { $("#terminal").addClass('focus'); } ).blur(function() { $("#terminal").removeClass('focus'); } );
     $("#terminalfocus").keypress(function(e) { 
@@ -112,8 +107,8 @@ Author: Luis Leao (luisleao@gmail.com)
   };
   
   var flipState=function(deviceLocated) {
-    btnOpen.disabled=!deviceLocated;
-    btnClose.disabled=deviceLocated;
+    $(".open").button( "option", "disabled", !deviceLocated);
+    $(".close").button( "option", "disabled", deviceLocated);
   };
   
   var refreshPorts=function() {
@@ -140,8 +135,7 @@ Author: Luis Leao (luisleao@gmail.com)
       logError("Invalid serialPort");
       return;
     }
-    statusLine.className="on";
-    statusLine.textContent="Connecting";
+    $("#status").html("Connecting");
     flipState(true);
     serial_lib.openSerial(serialPort, onOpen);
   };
@@ -149,7 +143,7 @@ Author: Luis Leao (luisleao@gmail.com)
   var onOpen=function(cInfo) {
     logSuccess("Device found (connectionId="+cInfo.connectionId+")");
     flipState(false);
-    statusLine.textContent="Connected";
+    $("#status").html("Connected");
     serial_lib.startListening(onRead);
   };
   
@@ -186,7 +180,7 @@ Author: Luis Leao (luisleao@gmail.com)
             } break;
             case 10 : {
               termCursorX = 0; termCursorY++;
-              termText.splice(termCursorY,0,"");
+              while (termCursorY >= termText.length) termText.push("");
             } break;
             case 13 : {
               termCursorX = 0;           
@@ -203,7 +197,7 @@ Author: Luis Leao (luisleao@gmail.com)
          if (termControlChars[1]==91) {
            switch (ch) {
              case 65: if (termCursorY > 0) termCursorY--; break; break; // up  FIXME should add extra lines in...
-             case 66: termCursorY++; while (termCursorY > termText.length) termText.push("")  // down FIXME should add extra lines in...
+             case 66: termCursorY++; while (termCursorY >= termText.length) termText.push("")  // down FIXME should add extra lines in...
              case 67: termCursorX++; break; // right
              case 68: if (termCursorX > 0) termCursorX--; break; // left
            }
@@ -220,24 +214,35 @@ Author: Luis Leao (luisleao@gmail.com)
          }
        } else termControlChars = [];         
   }
+
+  var escapeHTML = (function () {
+    var chr = { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;', ' ': '&nbsp;' };
+    return function (text) {
+        return text.replace(/[\"&<> ]/g, function (a) { return chr[a]; });
+    };
+  }());
+
   var updateTerminal = function() {        
         var t = [];
         for (y in termText) {
           var line = termText[y];
           if (y == termCursorY) {
             var ch = getSubString(line,termCursorX,1);
-            if (ch==" ") ch = "&nbsp;";
-            line = getSubString(line,0,termCursorX) + "<span class='termCursor'>" + ch + "</span>" + getSubString(line,termCursorX+1);
-          }
+            line = escapeHTML(getSubString(line,0,termCursorX)) + "<span class='termCursor'>" + escapeHTML(ch) + "</span>" + escapeHTML(getSubString(line,termCursorX+1));
+          } else
+            line = escapeHTML(line);
           t.push("<div class='termLine' lineNumber='"+y+"'>"+line+"</div>");
         }
         
         $("#terminal").html(t.join(""));
-        var cursorpos = $("#terminal .termLine[lineNumber="+termCursorY+"]").position().top;
-        var height = $("#terminal").height();
-        var scrollpos = $("#terminal").scrollTop();
-        if (cursorpos > height+scrollpos) $("#terminal").scrollTop(cursorpos-height);
-        if (cursorpos < scrollpos) $("#terminal").scrollTop(cursorpos);
+        var cursorLine = $("#terminal .termLine[lineNumber="+termCursorY+"]");
+        cursorLine[0].scrollIntoView();
+/*        var lineHeight = cursorLine.height();
+        var cursorPos = cursorLine.position().top;
+        var scrollHeight = $("#terminal").innerHeight();
+        var scrollPos = $("#terminal").scrollTop();
+        if (cursorPos+lineHeight > scrollHeight) $("#terminal").scrollTop(lineHeight+cursorPos-scrollHeight);
+        if (cursorPos < 0) $("#terminal").scrollTop(cursorPos);*/
   }
 
   var onRead=function(readData) {
@@ -261,12 +266,8 @@ Author: Luis Leao (luisleao@gmail.com)
   
   var onClose = function(result) {
    flipState(true);
-   statusLine.textContent="Hover here to connect";
-   statusLine.className="";
+   $("#status").html("Disconnected");
   }
-
-
-  
   
   init();
 })();
