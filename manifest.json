@@ -1,7 +1,7 @@
 {
   "name": "Espruino Serial Terminal",
   "description": "A Simple Web-Based VT100-style Serial Terminal",
-  "version": "0.2",
+  "version": "0.21",
   "app": {
     "background": {
       "scripts": ["js/background.js"]
