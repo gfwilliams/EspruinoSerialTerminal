@@ -19,9 +19,12 @@ Author: Gordon Williams (gw@pur3.co.uk)
 **/
 
 
+
 (function() {
   
   var myLayout;
+  var codeEditor;
+
   var serial_devices=document.querySelector(".serial_devices");
 
   var displayTimeout = null;
@@ -40,19 +43,46 @@ Author: Gordon Williams (gw@pur3.co.uk)
     console.log("ERR: "+msg);
   };
   
+  var isInBlockly = function() {
+    return $("#divblockly").is(":visible");
+  } 
+
+  var getCode=function() {
+    if (isInBlockly()) {
+      return "clearInterval();clearWatch();"+Blockly.Generator.workspaceToCode('JavaScript');
+    } else {
+      return codeEditor.getValue();
+    }
+  }
+
+  var saveFile = function(data, filename) {
+    var builder = new BlobBuilder();
+    builder.append(data);
+    saveAs(builder.getBlob('text/plain;charset=utf-8'), filename);
+  }
+
   var init=function() {
     if (!serial_lib) throw "You must include serial.js before";
 
-    myLayout = $('body').layout({ 
-      onresize : function() { $("#terminal").width($(".ui-layout-center").width()-4); }
-    });
+    // The central divider
+    myLayout = $('body').layout({ onresize : function() { 
+        $("#terminal").width($(".ui-layout-center").innerWidth()-4);
+var  w = $(".ui-layout-east").innerWidth();
+        $("#divblockly").width(w);
+        $("#divblockly").height($(".ui-layout-east").innerHeight() - $("#codetoolbar").outerHeight());    
+    } });
     myLayout.sizePane("east", $(window).width()/2);
-
-    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    // The code editor
+    codeEditor = CodeMirror.fromTextArea(document.getElementById("code"), {
       lineNumbers: true,
       matchBrackets: true,
       mode: "text/typescript"
     });
+    // blockly
+    Blockly.inject(document.getElementById('divblockly'),
+        {path: 'blockly/', toolbox: document.getElementById('toolbox')});
+     Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, document.getElementById('blocklyInitial'));           
+    
 
     // terminal toolbar
     $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
@@ -61,13 +91,28 @@ Author: Gordon Williams (gw@pur3.co.uk)
     // code toolbar
     $( ".send" ).button({ text: false, icons: { primary: "ui-icon-transferthick-e-w" } }).click(function() {
       if (serial_lib.isConnected()) {
-          var toSend = "echo(0);\n"+editor.getValue()+"echo(1);\n";
+          var toSend = "echo(0);\n"+getCode()+"echo(1);\n";
           console.log(toSend);
           serial_lib.writeSerial(toSend);
       }
     });
+    $( ".blockly" ).button({ text: false, icons: { primary: "ui-icon-image" } }).click(function() {
+        if (isInBlockly()) {
+          $("#divblockly").hide();
+          $("#divcode").show();
+        } else {
+          $("#divcode").hide();
+          $("#divblockly").show();
+        }
+
+    });
     $( ".load" ).button({ text: false, icons: { primary: "ui-icon-folder-open" } });
-    $( ".save" ).button({ text: false, icons: { primary: "ui-icon-disk" } });
+    $( ".save" ).button({ text: false, icons: { primary: "ui-icon-disk" } }).click(function() {
+      if (isInBlockly()) 
+        saveFile(Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(Blockly.mainWorkspace)), "code_blocks.xml");
+      else
+        saveFile(codeEditor.getValue(), "code.js");
+    });
     $("#terminal").css("top",  $("#terminaltoolbar").outerHeight()+"px");
 
     flipState(true);
