@@ -1,4 +1,5 @@
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
   background-color: #FFF;
@@ -10,33 +11,64 @@ body {
   overflow: hidden;
 }
 
-#toolbar {
-  display: inline-block;
-  width: 100%;
-}
-
 #terminal {
   font-family: Fixed, monospace;
-  font-size: 10px;
-  background-color: #888;
+  font-size: 12px;
+  background-color: #000;
+  color: white;
   display: block;
-  width: 320px;
-  height:200px;
   border: 2px solid #666;
   overflow: scroll; /* adds scrollbar */
-}
 
-#terminalfocus {
   position: absolute;
-  right: 20px;
-  bottom: 20px; 
-}
-
-.termCursor {
-  background-color: #000;
-  color: #FFF;
+  left: 0px;
+  top: 32px;
+  bottom: 0px;
 }
 
 #terminal.focus {
  border: 2px solid black;
+}
+
+#terminalfocus {
+  position: absolute;
+  top: -100px;  /* hide it */
+}
+
+.termCursor {
+  background-color: #FFF;
+  color: #000;
+}
+
+
+
+.ui-widget {
+        font-size: 10px;
+}
+
+.ui-layout-pane { /* all 'panes' */ 
+	background: #FFF; 
+	border: 1px solid #BBB; 
+	overflow: none;
+} 
+.ui-layout-east {       
+        overflow: auto;
+        width: 50%;
+}
+
+.ui-layout-resizer { /* all 'resizer-bars' */ 
+	background: #DDD; 
+} 
+
+.ui-layout-toggler { /* all 'toggler-buttons' */ 
+	background: #AAA; 
+} 
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
 }

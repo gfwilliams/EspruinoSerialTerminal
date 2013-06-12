@@ -18,8 +18,10 @@ Author: Luis Leao (luisleao@gmail.com)
 Author: Gordon Williams (gw@pur3.co.uk)
 **/
 
+
 (function() {
   
+  var myLayout;
   var serial_devices=document.querySelector(".serial_devices");
 
   var displayTimeout = null;
@@ -41,14 +43,32 @@ Author: Gordon Williams (gw@pur3.co.uk)
   var init=function() {
     if (!serial_lib) throw "You must include serial.js before";
 
-    $(window).resize(function() {
-      $("#terminal").width($(window).innerWidth()-4);
-      $("#terminal").height($(window).innerHeight()-(4+$("#terminal").position().top));
+    myLayout = $('body').layout({ 
+      onresize : function() { $("#terminal").width($(".ui-layout-center").width()-4); }
     });
+    myLayout.sizePane("east", $(window).width()/2);
+
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      lineNumbers: true,
+      matchBrackets: true,
+      mode: "text/typescript"
+    });
+
+    // terminal toolbar
     $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
     $( ".open" ).button({ text: false, icons: { primary: "ui-icon-play" } }).click(openSerial);
     $( ".close" ).button({ text: false, icons: { primary: "ui-icon-stop" } }).click(closeSerial);
-    $(window).resize(); // force terminal to be resized now we have layed everything out
+    // code toolbar
+    $( ".send" ).button({ text: false, icons: { primary: "ui-icon-transferthick-e-w" } }).click(function() {
+      if (serial_lib.isConnected()) {
+          var toSend = "echo(0);\n"+editor.getValue()+"echo(1);\n";
+          console.log(toSend);
+          serial_lib.writeSerial(toSend);
+      }
+    });
+    $( ".load" ).button({ text: false, icons: { primary: "ui-icon-folder-open" } });
+    $( ".save" ).button({ text: false, icons: { primary: "ui-icon-disk" } });
+    $("#terminal").css("top",  $("#terminaltoolbar").outerHeight()+"px");
 
     flipState(true);
     
@@ -57,7 +77,6 @@ Author: Gordon Williams (gw@pur3.co.uk)
     $("#terminalfocus").keypress(function(e) { 
       e.preventDefault();
       var ch = String.fromCharCode(e.which);
-      console.log("Press "+ch);
       if (serial_lib.isConnected())
         serial_lib.writeSerial(ch); 
     }).keydown(function(e) { 
@@ -82,7 +101,16 @@ Author: Gordon Williams (gw@pur3.co.uk)
         if (serial_lib.isConnected())
           serial_lib.writeSerial(ch);
       } 
-    });;
+    }).bind('paste', function () {
+      var element = this; 
+      // nasty hack - wait for paste to complete, then get contents of input
+      setTimeout(function () {
+        var text = $(element).val();
+        $(element).val("");
+        if (serial_lib.isConnected())
+          serial_lib.writeSerial(text);
+      }, 100);
+    });
 
     refreshPorts();
   };
@@ -172,7 +200,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
   }
   
   var handleReceivedCharacter = function (/*char*/ch) {
-        console.log("IN = "+ch);
+        //console.log("IN = "+ch);
         if (termControlChars.length==0) {        
           switch (ch) {
             case  8 : {
