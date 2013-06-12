@@ -4,6 +4,7 @@ EspruinoSerialTerminal
 A Simple Web-Based VT100 Serial Terminal - designed for writing code on microcontrollers that use the Espruino JavaScript interpreter (http://www.espruino.com) - but useful for a bunch of other stuff too!
 
 [![ScreenShot](https://raw.github.com/gfwilliams/EspruinoSerialTerminal/master/extras/screenshot.png)](http://youtu.be/4O5xKfazAWI)
+[![ScreenShot](https://raw.github.com/gfwilliams/EspruinoSerialTerminal/master/extras/screenshot2.png)](http://youtu.be/4O5xKfazAWI)
 
 This is a Chromium Web App that uses chome.serial to access your PC's serial port. You can download it from the Chrome Web Store: https://chrome.google.com/webstore/detail/espruino-serial-terminal/bleoifhkdalbjfbobjackfdifdneehpo
 
