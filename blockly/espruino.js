@@ -143,4 +143,10 @@ Blockly.JavaScript.espruino_digitalRead = function() {
   return ["digitalRead("+pin+")\n", Blockly.JavaScript.ORDER_ATOMIC];
 };
 
+// -----------------------------------------------------------------------------------
 
+onload = function() {
+  Blockly.inject(document.body,{path: '', toolbox: document.getElementById('toolbox')});
+  Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, document.getElementById('blocklyInitial')); 
+  window.parent.Blockly = Blockly;
+}

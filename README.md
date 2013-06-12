@@ -47,8 +47,8 @@ Features that would be nice
 * Better auto-detection of the correct serial device
 * More complete VT100 emulation
 * A syntax-highlighted JavaScript editor (CodeMirror?) that has a 'Send to espruino button'
-* A Blockly program designer - http://code.google.com/p/blockly/
 * Make it prettier/easier to use
+* Implement more of Espruino as Blockly Blocks
 
 Features that would be epic
 ----------------------------

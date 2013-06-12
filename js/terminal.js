@@ -18,8 +18,6 @@ Author: Luis Leao (luisleao@gmail.com)
 Author: Gordon Williams (gw@pur3.co.uk)
 **/
 
-
-
 (function() {
   
   var myLayout;
@@ -61,15 +59,16 @@ Author: Gordon Williams (gw@pur3.co.uk)
     saveAs(builder.getBlob('text/plain;charset=utf-8'), filename);
   }
 
+
   var init=function() {
     if (!serial_lib) throw "You must include serial.js before";
 
     // The central divider
     myLayout = $('body').layout({ onresize : function() { 
         $("#terminal").width($(".ui-layout-center").innerWidth()-4);
-var  w = $(".ui-layout-east").innerWidth();
-        $("#divblockly").width(w);
-        $("#divblockly").height($(".ui-layout-east").innerHeight() - $("#codetoolbar").outerHeight());    
+
+        $("#divblockly").width($(".ui-layout-east").innerWidth() - 2);
+        $("#divblockly").height($(".ui-layout-east").innerHeight() - ($("#codetoolbar").outerHeight()+4));
     } });
     myLayout.sizePane("east", $(window).width()/2);
     // The code editor
@@ -78,11 +77,6 @@ var  w = $(".ui-layout-east").innerWidth();
       matchBrackets: true,
       mode: "text/typescript"
     });
-    // blockly
-    Blockly.inject(document.getElementById('divblockly'),
-        {path: 'blockly/', toolbox: document.getElementById('toolbox')});
-     Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, document.getElementById('blocklyInitial'));           
-    
 
     // terminal toolbar
     $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
@@ -106,7 +100,23 @@ var  w = $(".ui-layout-east").innerWidth();
         }
 
     });
-    $( ".load" ).button({ text: false, icons: { primary: "ui-icon-folder-open" } });
+    $( ".load" ).button({ text: false, icons: { primary: "ui-icon-folder-open" } }).click(function() {
+      $("#fileLoader").click();
+    });
+    $("#fileLoader").change(function(event) {
+      if (event.target.files.length != 1) return;
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        var data = event.target.result;
+        if (isInBlockly()) {
+          Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, Blockly.Xml.textToDom(data));          
+        } else { 
+          codeEditor.setValue(data);
+        }
+        document.getElementById('load').value = '';
+      };
+      reader.readAsText(event.target.files[0]);
+    });
     $( ".save" ).button({ text: false, icons: { primary: "ui-icon-disk" } }).click(function() {
       if (isInBlockly()) 
         saveFile(Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(Blockly.mainWorkspace)), "code_blocks.xml");
