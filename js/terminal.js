@@ -43,7 +43,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
   
   var isInBlockly = function() {
     return $("#divblockly").is(":visible");
-  } 
+  };
 
   var getCode=function() {
     if (isInBlockly()) {
@@ -51,19 +51,19 @@ Author: Gordon Williams (gw@pur3.co.uk)
     } else {
       return codeEditor.getValue();
     }
-  }
+  };
 
   var saveFile = function(data, filename) {
     var builder = new BlobBuilder();
     builder.append(data);
     saveAs(builder.getBlob('text/plain;charset=utf-8'), filename);
-  }
+  };
   
   var serialWrite = function(ch) {
   //console.log("KEY "+e.keyCode+" = '"+ch+"'");
     if (serial_lib.isConnected())
       serial_lib.writeSerial(ch);
-  }
+  };
 
 
   var init=function() {
@@ -253,7 +253,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
       writeString+="\n"; 
     }
     serial_lib.writeSerial(writeString); 
-  }
+  };
 
   function getSubString(str, from, len) {
     if (len == undefined) {
@@ -307,7 +307,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
            }
          }
        } else termControlChars = [];         
-  }
+  };
 
   var escapeHTML = (function () {
     var chr = { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;', ' ': '&nbsp;' };
@@ -337,7 +337,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
         var scrollPos = $("#terminal").scrollTop();
         if (cursorPos+lineHeight > scrollHeight) $("#terminal").scrollTop(lineHeight+cursorPos-scrollHeight);
         if (cursorPos < 0) $("#terminal").scrollTop(cursorPos);*/
-  }
+  };
 
   var onRead=function(readData) {
     // Add data to our buffer
@@ -352,7 +352,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
         displayData = [];
         displayTimeout = null;
       }, 100);
-  }
+  };
 
   var closeSerial=function() {
    serial_lib.closeSerial(onClose);
@@ -361,7 +361,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
   var onClose = function(result) {
    flipState(true);
    $("#status").html("Disconnected");
-  }
+  };
   
   init();
 })();

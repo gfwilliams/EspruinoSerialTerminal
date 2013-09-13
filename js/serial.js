@@ -29,7 +29,7 @@ var serial_lib=(function() {
     }
     readListener=callback;
     onCharRead();
-  }
+  };
 
   var onCharRead=function(readInfo) {
     if (!readListener || !connectionInfo) {
@@ -39,7 +39,7 @@ var serial_lib=(function() {
       onRead(readInfo.data);
     }
     chrome.serial.read(connectionInfo.connectionId, 128, onCharRead);
-  }
+  };
 
   var getPorts=function(callback) {
     chrome.serial.getPorts(callback);
@@ -48,7 +48,7 @@ var serial_lib=(function() {
   var openSerial=function(serialPort, callback) {
     chrome.serial.open(serialPort, {bitrate: 9600}, 
       function(cInfo) {
-        onOpen(cInfo, callback)
+        onOpen(cInfo, callback);
     });
   };
   
@@ -65,10 +65,10 @@ var serial_lib=(function() {
   
   var writeSerial=function(str) {
     chrome.serial.write(connectionInfo.connectionId, str2ab(str), onWrite); 
-  }
+  };
   
   var onWrite=function(obj) {
-  }
+  };
   
   var onRead=function(readInfo) {
     if (readListener) readListener(readInfo);
@@ -81,7 +81,7 @@ var serial_lib=(function() {
       bufView[i]=str.charCodeAt(i);
     }
     return buf;
-  }
+  };
  
  
   var closeSerial=function(callback) {
@@ -109,5 +109,5 @@ var serial_lib=(function() {
     "startListening": startListening,
     "writeSerial": writeSerial,
     "closeSerial": closeSerial
-  }
+  };
 })();
