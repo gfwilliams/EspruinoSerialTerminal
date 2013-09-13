@@ -58,6 +58,12 @@ Author: Gordon Williams (gw@pur3.co.uk)
     builder.append(data);
     saveAs(builder.getBlob('text/plain;charset=utf-8'), filename);
   }
+  
+  var serialWrite = function(ch) {
+  //console.log("KEY "+e.keyCode+" = '"+ch+"'");
+    if (serial_lib.isConnected())
+      serial_lib.writeSerial(ch);
+  }
 
 
   var init=function() {
@@ -127,14 +133,21 @@ Author: Gordon Williams (gw@pur3.co.uk)
 
     flipState(true);
     
-    $("#terminal").click(function() { $("#terminalfocus").focus(); });
+    $("#terminal").mouseup(function() {
+      var terminalfocus = $('#terminalfocus');
+      var selectedText = window.getSelection().toString();
+      if (selectedText.length > 0) {        
+        terminalfocus.val(selectedText).select();
+        document.execCommand('copy');
+        terminalfocus.val('');
+      }
+      terminalfocus.focus(); 
+    });
     $("#terminalfocus").focus(function() { $("#terminal").addClass('focus'); } ).blur(function() { $("#terminal").removeClass('focus'); } );
     $("#terminalfocus").keypress(function(e) { 
       e.preventDefault();
       var ch = String.fromCharCode(e.which);
-      console.log("KEY "+e.keyCode+" = '"+ch+"'");
-      if (serial_lib.isConnected())
-        serial_lib.writeSerial(ch); 
+      serialWrite(ch);
     }).keydown(function(e) { 
       var ch = undefined;
       if (e.ctrlKey) {
@@ -153,18 +166,15 @@ Author: Gordon Williams (gw@pur3.co.uk)
 
       if (ch!=undefined) {
         e.preventDefault();
-        console.log("KEY "+e.keyCode+" = '"+ch+"'");
-        if (serial_lib.isConnected())
-          serial_lib.writeSerial(ch);
+        serialWrite(ch);
       } 
     }).bind('paste', function () {
       var element = this; 
       // nasty hack - wait for paste to complete, then get contents of input
       setTimeout(function () {
         var text = $(element).val();
-        $(element).val("");
-        if (serial_lib.isConnected())
-          serial_lib.writeSerial(text);
+        $(element).val("");        
+        serialWrite(text);
       }, 100);
     });
 
@@ -256,7 +266,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
   }
   
   var handleReceivedCharacter = function (/*char*/ch) {
-        console.log("IN = "+ch);
+        //console.log("IN = "+ch);
         if (termControlChars.length==0) {        
           switch (ch) {
             case  8 : {

@@ -10,13 +10,13 @@ This is a Chromium Web App that uses chome.serial to access your PC's serial por
 
 It implements basic VT100 terminal features (up/down/left/right/etc) - enough for you to write code using the Espruino. You can also use the right-hand pane to write JavaScript code on the PC, and can then click the 'transfer' icon to send that code directly down the Serial Port.
 
-Currently, it's a bit of a mess inside - quickly hacked together from the Chrome example and hence under their Apache licence. Please, if you have some free time, help me make this better!
+Please, if you have some free time, help us improve this!
 
 Installing From Chrome Web Store
 ----------------------------
 
 * Install the [Chrome Web Browser](https://www.google.com/intl/en/chrome/browser/)
-* [Go Here](https://chrome.google.com/webstore/detail/espruino-serial-terminal/bleoifhkdalbjfbobjackfdifdneehpo)
+* [Go Here](https://chrome.google.com/webstore/detail/espruino-serial-terminal/bleoifhkdalbjfbobjackfdifdneehpo) to find the app in the Chrome Web Store
 * Click 'Install'
 * Click 'Launch App'
 
@@ -41,18 +41,27 @@ Using
 * Click the 'Play' (connect) button
 * Click in the gray terminal window and start typing away!
 
-Features that would be nice
-----------------------------
-* Make Copy from the terminal work! (Paste is implemented now)
-* Option to use a Baud rate other than the default 9600
-* Better auto-detection of the correct serial device
-* More complete VT100 emulation
-* A syntax-highlighted JavaScript editor (CodeMirror?) that has a 'Send to espruino button'
-* Make it prettier/easier to use
-* Implement more of Espruino as Blockly Blocks
+Using (advanced)
+--------------
+* Click the button with left/right arrows to transfer the text (or graphics) in the right-hand pane to Espruino
+* Click the button with a picture frame to switch between graphical and text views (the code will not auto-update)
+* To copy on the left-hand side, click and drag over the text to copy
+* To paste, press Ctrl + V
 
-Features that would be epic
-----------------------------
-* Some kind of arrangement so projects on the Espruino site could immediately be loaded
-* Implement the STM32 bootloader protocol so you can flash Espruino over the internet!
-* Use the Mozilla sound API to fake a serial port over the Audio Link for non-Chrome devices
+Features that would be good to implement
+-----------------------------------
+* Better auto-detection of the correct serial device
+* Detection of serial disconnect (and auto reconnect)
+* Figure out why Chrome on Linux randomly loses characters while writing to USB CDC devices
+* Make everything prettier/easier to use
+* Implement more of Espruino as Blockly Blocks
+* Blocks turn red if they can't do certain things (for instance a pin that won't do analog)
+* Some kind of arrangement so projects on the Espruino website could immediately be loaded
+* Codeacademy-style online tutor that talks you through the first few steps of coding on Espruino
+* Keep code on right in sync with graphical editor (however will )
+
+Nice but not required at all
+-------------------------
+* More complete VT100 terminal emulation
+* Option to use a Baud rate other than the default 9600
+* Use the Mozilla sound API to fake a serial port over the Audio Link for non-Chrome web browsers

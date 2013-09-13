@@ -24,6 +24,11 @@ body {
   left: 0px;
   top: 32px;
   bottom: 0px;
+  
+    -o-user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;  
+  user-select: text;
 }
 
 #terminal.focus {
