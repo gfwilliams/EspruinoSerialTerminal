@@ -132,6 +132,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
     $("#terminalfocus").keypress(function(e) { 
       e.preventDefault();
       var ch = String.fromCharCode(e.which);
+      console.log("KEY "+e.keyCode+" = '"+ch+"'");
       if (serial_lib.isConnected())
         serial_lib.writeSerial(ch); 
     }).keydown(function(e) { 
@@ -152,7 +153,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
 
       if (ch!=undefined) {
         e.preventDefault();
-        console.log("Press "+e.keyCode+" = '"+ch+"'");
+        console.log("KEY "+e.keyCode+" = '"+ch+"'");
         if (serial_lib.isConnected())
           serial_lib.writeSerial(ch);
       } 
@@ -255,7 +256,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
   }
   
   var handleReceivedCharacter = function (/*char*/ch) {
-        //console.log("IN = "+ch);
+        console.log("IN = "+ch);
         if (termControlChars.length==0) {        
           switch (ch) {
             case  8 : {
@@ -280,7 +281,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
          if (termControlChars[1]==91) {
            switch (ch) {
              case 65: if (termCursorY > 0) termCursorY--; break; break; // up  FIXME should add extra lines in...
-             case 66: termCursorY++; while (termCursorY >= termText.length) termText.push("")  // down FIXME should add extra lines in...
+             case 66: termCursorY++; while (termCursorY >= termText.length) termText.push(""); break;  // down FIXME should add extra lines in...
              case 67: termCursorX++; break; // right
              case 68: if (termCursorX > 0) termCursorX--; break; // left
            }
