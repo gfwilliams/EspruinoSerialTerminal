@@ -10,11 +10,7 @@ This is a Chromium Web App that uses chome.serial to access your PC's serial por
 
 It implements basic VT100 terminal features (up/down/left/right/etc) - enough for you to write code using the Espruino. You can also use the right-hand pane to write JavaScript code on the PC, and can then click the 'transfer' icon to send that code directly down the Serial Port.
 
-<<<<<<< HEAD
-Currently, it's a bit of a mess inside - quickly hacked together from the Chrome example and hence under their Apache licence. Please, if you have some free time then help us make this better!
-=======
-Please, if you have some free time, help us improve this!
->>>>>>> 5d35fd9da921a243712d91325fe49fde7edf5c25
+Currently, this isn't as good as it could be. So please, if you have some free time, help us improve this!
 
 Installing From Chrome Web Store
 ----------------------------
