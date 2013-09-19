@@ -59,6 +59,19 @@ Author: Gordon Williams (gw@pur3.co.uk)
     saveAs(builder.getBlob('text/plain;charset=utf-8'), filename);
   }
 
+  var toggleWebCam = function() {
+    var window_url = window.URL || window.webkitURL;
+    navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia({audio: false, video: { "mandatory" : { "minWidth":"1280","minHeight":"720" }}}, function(stream) {
+        document.querySelector('video').src = window_url.createObjectURL(stream);
+        $("#terminal").addClass("with_webcam");
+      }, function(e) {
+        console.log('onError!', e);
+      });
+    } 
+  }
 
   var init=function() {
     if (!serial_lib) throw "You must include serial.js before";
@@ -66,6 +79,8 @@ Author: Gordon Williams (gw@pur3.co.uk)
     // The central divider
     myLayout = $('body').layout({ onresize : function() { 
         $("#terminal").width($(".ui-layout-center").innerWidth()-4);
+        $("#videotag").width($(".ui-layout-center").innerWidth()-4);
+        $("#videotag").height($(".ui-layout-center").innerHeight() - ($("#terminaltoolbar").outerHeight()+3));
 
         $("#divblockly").width($(".ui-layout-east").innerWidth() - 2);
         $("#divblockly").height($(".ui-layout-east").innerHeight() - ($("#codetoolbar").outerHeight()+4));
@@ -82,6 +97,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
     $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
     $( ".open" ).button({ text: false, icons: { primary: "ui-icon-play" } }).click(openSerial);
     $( ".close" ).button({ text: false, icons: { primary: "ui-icon-stop" } }).click(closeSerial);
+    $( ".webcam" ).button({ text: false, icons: { primary: "ui-icon-person" } }).click(toggleWebCam);
     // code toolbar
     $( ".send" ).button({ text: false, icons: { primary: "ui-icon-transferthick-e-w" } }).click(function() {
       if (serial_lib.isConnected()) {
@@ -354,4 +370,8 @@ Author: Gordon Williams (gw@pur3.co.uk)
   
   init();
 })();
+
+
+
+
 
