@@ -11,6 +11,7 @@ body {
   overflow: hidden;
 }
 
+
 #terminal {
   font-family: Fixed, monospace;
   font-size: 12px;
@@ -40,12 +41,37 @@ body {
   top: -100px;  /* hide it */
 }
 
-.termCursor {
-  background-color: #FFF;
-  color: #000;
+#videotag {
+  background-color: black;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  z-index:-100;
 }
 
+#terminal.with_webcam {
+  background: none;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px;
+/*  color : white;
+  text-shadow: -1px -1px black, 1px 1px black, 1px -1px black, -1px 1px black,
+               -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black,
+               -2px -2px black, 2px 2px black, 2px -2px black, -2px 2px black,
+               -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black,
+               -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;	*/
+  color : black;
+  text-shadow: -1px -1px white, 1px 1px white, 1px -1px white, -1px 1px white,
+               -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white,
+               -2px -2px white, 2px 2px white, 2px -2px white, -2px 2px white,
+               -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white,
+               -3px 0 white, 0 3px white, 3px 0 white, 0 -3px white;
+}
 
+.termCursor {
+  background-color: #FFF;
+  color: #888;
+}
 
 .ui-widget {
         font-size: 10px;
@@ -60,6 +86,10 @@ body {
         overflow: auto;
         width: 50%;
 }
+.ui-layout-center {       
+        overflow: hidden;
+}
+
 
 .ui-layout-resizer { /* all 'resizer-bars' */ 
 	background: #DDD; 

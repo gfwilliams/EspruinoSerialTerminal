@@ -14,7 +14,7 @@
   <script src="js/codemirror-javascript.js"></script>
 
   <!-- for file save -->
-  <script type="text/javascript" src="js/BlobBuilder.min.js"></script>
+  <!--<script type="text/javascript" src="js/BlobBuilder.min.js"></script>-->
   <script type="text/javascript" src="js/FileSaver.min.js"></script>
 
   <title>Espruino Serial Terminal</title>
@@ -49,12 +49,15 @@ setInterval(function() {
           <button class="open">Connect</button>
           <button class="close">Disconnect</button>
           <span id="status">Not Connected</span>
+          <button class="webcam" style="position:absolute;right:4px;">Webcam</button>
     </div>
+    <video autoplay id="videotag"></video>  
     <div id="terminal">
       <h3>Espruino Serial Terminal</h3>
       <p>A Serial Port Terminal Web App for Chrome</p>
       <p>Just choose a Serial Port from the drop-down list above and click the Play Button to connect. Click in this window to get focus (black border), which will allow you to send characters down the Serial Port.</p>
       <p>This is designed for <a href="http://www.espruino.com" target="_blank">Espruino JavaScript for Microcontrollers</a>. If you like this, please give Espruino a try!</p>
+
     </div>
     <textarea id="terminalfocus" rows="1" cols="1"></textarea>
   </div>

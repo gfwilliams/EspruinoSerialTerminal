@@ -10,7 +10,11 @@ This is a Chromium Web App that uses chome.serial to access your PC's serial por
 
 It implements basic VT100 terminal features (up/down/left/right/etc) - enough for you to write code using the Espruino. You can also use the right-hand pane to write JavaScript code on the PC, and can then click the 'transfer' icon to send that code directly down the Serial Port.
 
+<<<<<<< HEAD
+Currently, it's a bit of a mess inside - quickly hacked together from the Chrome example and hence under their Apache licence. Please, if you have some free time then help us make this better!
+=======
 Please, if you have some free time, help us improve this!
+>>>>>>> 5d35fd9da921a243712d91325fe49fde7edf5c25
 
 Installing From Chrome Web Store
 ----------------------------
@@ -31,6 +35,13 @@ Installing
 * Click 'Load Unpackaged Extension'
 * Navigate to the EspruinoSerialTerminal Directory and click Ok
 * Job Done. It'll now appear as an app, but you can start it easily right now by clicking the 'Launch' link on the extensions page, or whenever you open a new tab
+
+Permissions
+----------
+
+This web app requires the following permissions:
+* *Serial port access* : So that it can access the Espruino board via USB/Serial
+* *Webcam access* : So that when you click the little person icon in the top-right of the terminal window, you can overlay the terminal on a live video feed
 
 Using
 -----
@@ -55,10 +66,11 @@ Features that would be good to implement
 * Figure out why Chrome on Linux randomly loses characters while writing to USB CDC devices
 * Make everything prettier/easier to use
 * Implement more of Espruino as Blockly Blocks
+* Actually toggle WebCam on and off (currently it can only turn on)
 * Blocks turn red if they can't do certain things (for instance a pin that won't do analog)
 * Some kind of arrangement so projects on the Espruino website could immediately be loaded
 * Codeacademy-style online tutor that talks you through the first few steps of coding on Espruino
-* Keep code on right in sync with graphical editor (however will )
+* Keep code on right in sync with graphical editor
 
 Nice but not required at all
 -------------------------
