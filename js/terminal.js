@@ -150,7 +150,11 @@ Author: Gordon Williams (gw@pur3.co.uk)
     $("#terminal").mouseup(function() {
       var terminalfocus = $('#terminalfocus');
       var selectedText = window.getSelection().toString();
-      if (selectedText.length > 0) {        
+      if (selectedText.length > 0) {               
+        //console.log(selectedText);
+        //console.log(selectedText.split("").map(function(c) { return c.charCodeAt(0); }));    
+        selectedText = selectedText.replace(/\xA0/g," "); // Convert nbsp chars to spaces
+        //console.log(selectedText.split("").map(function(c) { return c.charCodeAt(0); }));
         terminalfocus.val(selectedText).select();
         document.execCommand('copy');
         terminalfocus.val('');
