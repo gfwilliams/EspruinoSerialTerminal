@@ -63,10 +63,12 @@ Features that would be good to implement
 * Make everything prettier/easier to use
 * Implement more of Espruino as Blockly Blocks
 * Actually toggle WebCam on and off (currently it can only turn on)
-* Blocks turn red if they can't do certain things (for instance a pin that won't do analog)
+* Blockly Blocks to turn red if they can't do certain things (for instance a pin that won't do analog)
 * Some kind of arrangement so projects on the Espruino website could immediately be loaded
 * Codeacademy-style online tutor that talks you through the first few steps of coding on Espruino
 * Keep code on right in sync with graphical editor
+* Being able to choose a filename for Save, so you don't have to change the name each time
+* Storing the code and blockly blocks locally so they are remembered on startup
 
 Nice but not required at all
 -------------------------
