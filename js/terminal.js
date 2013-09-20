@@ -54,9 +54,7 @@ Author: Gordon Williams (gw@pur3.co.uk)
   };
 
   var saveFile = function(data, filename) {
-    var builder = new BlobBuilder();
-    builder.append(data);
-    saveAs(builder.getBlob('text/plain;charset=utf-8'), filename);
+    saveAs(new Blob([data], { type: "text/plain" }), filename);
   };
   
   var serialWrite = function(ch) {
